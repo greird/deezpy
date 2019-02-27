@@ -16,7 +16,7 @@ Features included are
 Note: Most routes can take a comma-separated list of item ids (e.g. `/playlist/4262365542,1600104235`).
 
 ![Dashboard view](http://greird.webfactional.com/img/deezpy1.png "")
-👆 This is what the /artist/<id> endpoint looks like.
+👆 This is what the `/artist/<id>` endpoint looks like.
 
 ## Configuration
 
