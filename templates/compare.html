@@ -1,0 +1,48 @@
+{% extends "index.html" %}
+{% block nav %}
+{{ super() }}
+{% endblock %}
+
+{% block body %}
+
+
+	{% if intersection|length > 0 %}
+	<div class="alert alert-info" role="alert">{{ intersection|length }} tracks are present in both tracklists.</div>
+	{% endif%}
+
+	<div class="row">
+		{% for item in items %}
+		<div class="col">
+			<h3><a href="{{ url_for('playlist', playlist_id=item.id) }}" class="text-dark">{{ item.title }}</a></h3>
+
+			<a href="https://www.deezer.com/plugins/player?format=classic&autoplay=true&playlist=true&color=007FEB&layout=dark&size=medium&type=tracks&id={% for track in item.tracks.data %}{{ track.id }},{% endfor %}" class="btn btn-sm btn-primary mb-3" target="_blank">
+				▶ Listen
+			</a>
+			<table class="table table-hover">
+				<thead style="font-size: 0.8em">
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col"></th>
+						<th scope="col">TRACK</th>
+						<th scope="col">ARTIST</th>
+						<th scope="col">ALBUM</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for track in item.tracks.data %}
+					<tr {% if track.id in intersection %}class="table-info"{% endif %}>
+						<th class="align-middle" scope="row">{{loop.index}}</th>
+						<td class="align-middle" scope="row"><img src="{{ track.album.cover_small }}"></td>
+						<td class="align-middle"><a href="{{ url_for('track', track_id=track.id) }}" class="text-dark">{{ track.title }}</a></td>
+						<td class="align-middle"><a href="{{ url_for('artist', artist_id=track.artist.id) }}" class="text-dark">{{ track.artist.name }}</a></td>
+						<td class="align-middle"><a href="{{ url_for('album', album_id=track.album.id) }}" class="text-dark">{{ track.album.title }}</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{% endfor %}
+	</div>
+
+
+{% endblock %}

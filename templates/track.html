@@ -1,0 +1,79 @@
+{% extends "index.html" %}
+{% block nav %}
+{{ super() }}
+{% endblock %}
+
+{% block body %}
+<script>
+	(function(d, s, id) { 
+		var js, djs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return; 
+		js = d.createElement(s); js.id = id; 
+		js.src = "https://e-cdns-files.dzcdn.net/js/widget/loader.js"; 
+		djs.parentNode.insertBefore(js, djs);
+	}(document, "script", "deezer-widget-loader"));
+</script>
+
+<h2>♫ {{ track.title }} <small class="text-muted">by <a href="{{ url_for('artist', artist_id=track.artist.id) }}" class="text-secondary">{{ track.artist.name }}</a></small></h2>
+<a href="{{ track.link }}" class="card-link">See the track on Deezer 🔎</a>
+<div class="row mt-3">
+
+	<div class="card mx-3 mb-3" style="width: 292px">
+		<div class="card-header">Player</div>
+		<div class="card-body">
+			<img class="" src="{{ track.album.cover_medium }}" width="250" height="250" alt="">
+			<div class="deezer-widget-player" data-src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=false&width=250&height=100&color=007FEB&layout=&size=medium&type=tracks&id={{ track.id }}" data-scrolling="no" data-frameborder="0" data-allowTransparency="true" data-width="250" data-height="100"></div>
+		</div>
+	</div>
+
+	<div class="card mb-3 w-50">
+		<div class="card-header">Track</div>
+		<div class="card-body">
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item">Album: <a href="{{ url_for('album', album_id=track.album.id) }}">{{ track.album.title }}</a></li>
+				<li class="list-group-item">Readable: {{ track.readable }}</li>
+				<li class="list-group-item">Short title: {{ track.title_short }}</li>
+				<li class="list-group-item">Title version: {{ track.title_version }}</li>
+				<li class="list-group-item">ISRC: {{ track.isrc }}</li>
+				<li class="list-group-item">Track position: {{ track.track_position }}</li>
+				<li class="list-group-item">Disk number {{ track.disk_number }}</li>
+				<li class="list-group-item">Rank: {{ track.rank }}</li>
+				<li class="list-group-item">Release on {{ track.release_date }}</li>
+				<li class="list-group-item">{{ track.bpm }} bpm</li>
+				<li class="list-group-item">Gain: {{ track.gain }}db</li>
+				{% if track.explicit_lyrics %}
+					<li class="list-group-item"><span class="badge badge-danger">EXPLICIT</span></li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+
+	<div class="card mx-3 mb-3 w-25">
+		<div class="card-header">Contributors</div>
+		<div class="card-body">
+			<ul class="list-unstyled">
+				{% for contributor in track.contributors %}
+				<li class="media mb-2">
+					<img class="mr-3" src="{{ contributor.picture_medium }}" width="60" height="60" alt="">
+					<div class="media-body">
+						<h5 class="mt-0 mb-1"><a href="{{ url_for('artist', artist_id=contributor.id) }}" class="text-dark">{{ contributor.name }}</a></h5>
+						Role: {{ contributor.role }}
+					</div>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+
+	<div class="card mx-3 mb-3" >
+		<div class="card-header">Available countries</div>
+		<div class="card-body">
+			{% for country in track.available_countries %}
+				<span class="badge badge-pill badge-primary">{{ country }}</span>
+			{% endfor %}
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}

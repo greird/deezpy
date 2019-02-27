@@ -1,0 +1,137 @@
+{% extends "index.html" %}
+{% block nav %}
+{{ super() }}
+{% endblock %}
+
+{% block body %}
+
+{% if item|length > 1 %}
+	{% if title %}
+		<h1>{{ title }}</h1>
+		<p>{{ item|length }} {{ item[0]['type'] }}s.</p>
+	{% else %}
+		<h1>{{ item|length }} {{ item[0]['type'] }}s.</h1>
+	{% endif %}
+{% if item[0]['type'] == "album" %}
+<ul class="list-unstyled">
+	{% for i in item %}
+	<li class="media my-3 float-xl-left w-50">
+		<img class="mr-3" src="{{ i.image }}" width="100" height="100">
+		<div class="media-body">
+			<h5 class="mt-0">
+				<a href="{{ url_for('album', album_id=i.id) }}" class="text-dark">{{ i.title }}</a> {% if i.explicit_lyrics %}<span class="badge badge-danger">EXPLICIT</span>{% endif %}
+				<small class="text-secondary">by 
+					<a href="{{ url_for('artist', artist_id=i.artist.id) }}" class="text-dark">{{ i.artist.name }}</a>
+				</small>
+			</h5>
+			<small>
+				<p class="my-0">
+					{{ i.nb_tracks }} tracks •
+					{{ i.fans }} fan(s) •
+					Released on {{ i.release_date }} <span class="text-secondary">on {{ i.label }}</span>
+				</p>
+				{% if i.genres %}
+				{% for genre in i.genres.data %}
+				<span class="badge badge-pill badge-secondary">{{ genre.name }}</span>
+				{% endfor %}
+				<br />
+				{% endif %}
+				<a href="https://www.deezer.com/{{ item[0]['type'] }}/{{ i.id }}?autoplay=true" class="card-link" target="_blank">▶ Listen</a>
+			</small>
+		</div>
+	</li>
+	{% endfor %}
+</ul>
+			
+{% elif item[0]['type'] == "playlist" %}
+<ul class="list-unstyled">
+	{% for i in item %}
+	<li class="media my-3 float-xl-left w-50">
+		<img class="mr-3" src="{{ i.image }}" width="100" height="100">
+		<div class="media-body">
+			<h5 class="mt-0">
+				<a href="{{ url_for('playlist', playlist_id=i.id) }}" class="text-dark">{{ i.title }}</a>
+				<small class="text-secondary">by 
+					<a href="{{ url_for('user', user_id=i.creator.id) }}" class="text-dark">{{ i.creator.name }}</a>
+				</small>
+			</h5>
+			<small>
+				<p class="my-0">
+					{{ i.nb_tracks }} tracks •
+					{{ i.fans }} fan(s) •
+					Created on {{ i.creation_date }}
+				</p>
+				<a href="https://www.deezer.com/{{ item[0]['type'] }}/{{ i.id }}?autoplay=true" class="card-link" target="_blank">▶ Listen</a>
+			</small>
+		</div>
+	</li>
+	{% endfor %}
+</ul>
+
+{% elif item[0]['type'] == "artist" %}
+<ul class="list-unstyled">
+	{% for i in item %}
+	<li class="media my-3 float-xl-left w-50">
+		<img class="mr-3" src="{{ i.image }}" width="100" height="100">
+		<div class="media-body">
+			<h5 class="mt-0">
+				<a href="{{ url_for('artist', artist_id=i.id) }}" class="text-dark">{{ i.name }}</a>
+			</h5>
+			<small>
+				<p class="my-0">
+					{{ i.nb_fan }} fan(s) •
+					<a href="{{ url_for('artist_items', artist_id=i.id, type='albums') }}" class="text-dark">{{ i.nb_album }} album(s)</a>
+				</p>
+				<a href="https://www.deezer.com/{{ item[0]['type'] }}/{{ i.id }}?autoplay=true" class="card-link" target="_blank">▶ Listen</a>
+			</small>		
+		</div>
+	</li>
+	{% endfor %}
+</ul>
+
+{% elif item[0]['type'] == "track" %}
+<a href="https://www.deezer.com/plugins/player?format=classic&autoplay=true&playlist=true&color=007FEB&layout=dark&size=medium&type=tracks&id={% for track in item %}{{ track.id }},{% endfor %}" class="btn btn-lg btn-primary mb-3" target="_blank">
+	▶ Listen
+</a>
+<a href="{{ url_for('create') }}?tracks={% for track in item %}{{ track.id }},{% endfor %}" class="btn btn-outline-dark mb-3 float-right">
+	䷀ Save as playlist
+</a>
+<table class="table table-striped">
+	<thead style="font-size: 0.8em">
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col"></th>
+			<th scope="col">TRACK</th>
+			<th scope="col">ARTIST</th>
+			<th scope="col">ALBUM</th>
+			<th scope="col">RELEASE DATE</th>
+			<th scope="col">RANK</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for track in item %}
+		{% if track.album and track.artist %}
+		<tr>
+			<th class="align-middle" scope="row">{{loop.index}}</th>
+			<td class="align-middle" scope="row"><img src="{{ track.album.cover_small }}"></td>
+			<td class="align-middle">
+				<a href="{{ url_for('track', track_id=track.id) }}" class="text-dark">{{ track.title }}</a>
+				{% if track.explicit_lyrics %}<span class="badge badge-danger">EXPLICIT LYRICS</span>{% endif %}
+			</td>
+			<td class="align-middle"><a href="{{ url_for('artist', artist_id=track.artist.id) }}" class="text-dark">{{ track.artist.name }}</a></td>
+			<td class="align-middle"><a href="{{ url_for('album', album_id=track.album.id) }}" class="text-dark">{{ track.album.title }}</a></td>
+			<td class="align-middle">{{ track.release_date }}</td>
+			<td class="align-middle">
+				<div class="progress" style="height: 5px;">
+					<div class="progress-bar bg-secondary" role="progressbar" style="width: {{ track.rank / 10000 }}%"  aria-valuenow="{{ track.rank / 10000 }}" aria-valuemin="0" aria-valuemax="100"></div>
+				</div>
+			</td>
+		</tr>
+		{% endif %}
+		{% endfor %}
+	</tbody>
+</table>
+
+{% endif %}
+{% endif %}
+{% endblock %}

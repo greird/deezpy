@@ -1,0 +1,126 @@
+{% extends "index.html" %}
+{% block nav %}
+{{ super() }}
+{% endblock %}
+
+{% block body %}
+<script>
+	(function(d, s, id) { 
+		var js, djs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return; 
+		js = d.createElement(s); js.id = id; 
+		js.src = "https://e-cdns-files.dzcdn.net/js/widget/loader.js"; 
+		djs.parentNode.insertBefore(js, djs);
+	}(document, "script", "deezer-widget-loader"));
+</script>
+
+<h2>{{ user.name }}</h2>
+<a href="{{ user.link }}" class="card-link">See the user on Deezer 🔎</a>
+<div class="row mt-3">
+
+	<div class="card mx-3 mb-3" style="width: 292px">
+		<div class="card-header">Information</div>
+		<div class="card-body">
+			<img class="" src="{{ user.picture_medium }}" width="250" height="250" alt="">
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item">Firstname: {{ user.firstname }}</li>
+				<li class="list-group-item">Lastname: {{ user.lastname }}</li>
+				{% if rank > 0 %}
+				<li class="list-group-item">Average rank: 
+					<div class="progress mt-1" style="height: 10px;">
+						<div class="progress-bar bg-warning" role="progressbar" style="width: {{ rank / 10000 }}%"  aria-valuenow="{{ rank / 10000 }}" aria-valuemin="0" aria-valuemax="100"></div>
+					</div>
+				</li>
+				{% endif %}
+				<li class="list-group-item">Gender: {{ user.gender }}</li>
+				<li class="list-group-item">Country: {{ user.country }}</li>
+				<li class="list-group-item">Language: {{ user.lang }}</li>
+				<li class="list-group-item">On Deezer since {{ user.inscription_date }}</li>
+				<li class="list-group-item">Birthday: {{ user.birthday }}</li>
+				<li class="list-group-item">Status: {{ user.status }}</li>
+				{% if user.is_kid %}
+				<li class="list-group-item">Kid profile</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+
+	<div class="card mr-3 mb-3">
+		<div class="card-header">Library</div>
+		<div class="card-body">
+			<div class="list-group list-group-flush">
+				<div class="deezer-widget-player" data-src="https://www.deezer.com/plugins/player?format=square&autoplay=false&playlist=true&width=250&height=250&color=007FEB&layout=&size=medium&type=charts&id=user_{{ user.id }}&title={{ user.name }}" data-scrolling="no" data-frameborder="0" data-allowTransparency="true" data-width="250" data-height="250"></div>
+				<a href="{{ url_for('user_items', user_id=user.id, type='tracks') }}?title={{ user.name }}'s loved tracks" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Loved Tracks</h5>
+					</div>
+					<small>{{ url_for('user_items', user_id=user.id, type='tracks') }}</small>
+				</a>
+				<a href="{{ url_for('user_items', user_id=user.id, type='albums') }}?title={{ user.name }}'s favourite albums" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Albums</h5>
+					</div>
+					<small>{{ url_for('user_items', user_id=user.id, type='albums') }}</small>
+				</a>
+				<a href="{{ url_for('user_items', user_id=user.id, type='artists') }}?title={{ user.name }}'s favourite artists" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Artists</h5>
+					</div>
+					<small>{{ url_for('user_items', user_id=user.id, type='artists') }}</small>
+				</a>
+				<a href="{{ url_for('user_items', user_id=user.id, type='playlists') }}?title={{ user.name }}'s favourite playlists" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Playlists</h5>
+					</div>
+					<small>{{ url_for('user_items', user_id=user.id, type='playlists') }}</small>
+				</a>
+				<a href="{{ url_for('user_items', user_id=user.id, type='charts') }}?title={{ user.name }}'s top tracks" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Top tracks</h5>
+					</div>
+					<small>{{ url_for('user_items', user_id=user.id, type='history') }}</small>
+				</a>
+				<a href="{{ url_for('user_items', user_id=user.id, type='history') }}?title={{ user.name }}'s listening history" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Listening history</h5>
+					</div>
+					<small>{{ url_for('user_items', user_id=user.id, type='history') }}</small>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="card mr-3 mb-3">
+		<div class="card-header">Recommendations</div>
+		<div class="card-body">
+			<div class="list-group list-group-flush">
+				<a href="{{ url_for('user_items', user_id=user.id, type='flow') }}?title={{ user.name }}'s Flow" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Flow</h5>
+					</div>
+					<small>{{ url_for('user_items', user_id=user.id, type='flow') }}</small>
+				</a>
+				<a href="{{ url_for('user_recommendations', user_id=user.id, type='tracks') }}?title={{ user.name }}'s recommended tracks" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Tracks</h5>
+					</div>
+					<small>{{ url_for('user_recommendations', user_id=user.id, type='tracks') }}</small>
+				</a>
+				<a href="{{ url_for('user_recommendations', user_id=user.id, type='albums') }}?title={{ user.name }}'s recommended albums" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Albums</h5>
+					</div>
+					<small>{{ url_for('user_recommendations', user_id=user.id, type='albums') }}</small>
+				</a>
+				<a href="{{ url_for('user_recommendations', user_id=user.id, type='artists') }}?title={{ user.name }}'s recommended artists" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Artists</h5>
+					</div>
+					<small>{{ url_for('user_recommendations', user_id=user.id, type='artists') }}</small>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

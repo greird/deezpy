@@ -1,0 +1,118 @@
+<!doctype html>
+<title></title>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+	<div class="container-fluid">
+		{% if not session.token %}
+		<div class="alert alert-warning mt-3" role="alert">
+			<h4 class="alert-heading">Hello stranger !</h4>
+			<p>Please log in in order to use the app.</p>
+			<a class="btn btn-outline-dark btn-lg" href="{{ url_for('auth') }}" role="button">Log in 🔑</a>
+		</div>
+		{% if request.args.get('error', None) %}
+		<div class="alert alert-danger" role="alert">
+			<b>Something went wrong.</b><br /> {{ request.args.get('error', None) }}
+		</div>
+		{% endif %}
+
+		{% else %}
+		<div class="row py-3">
+			<div class="col-sm">
+				<div class="media">
+					<a href="{{ url_for('user', user_id=session.id) }}"><img class="mr-3" src="{{ session.picture }}" alt="User profile pic" width="60" height="60"></a>
+					<div class="media-body">
+						<h5 class="mt-0 mb-1">Hi {{ session.name }} <small class="text-muted"><a href="{{ url_for('user', user_id=session.id) }}" class="text-muted">({{ session.id }})</a></small>.</h5>
+						<p><small>
+							Token: <mark>{{ session.token }}</mark>
+							{% for perm in session.perms %}
+							<span class="badge badge-secondary">{{ perm }}</span>
+							{% endfor %}
+						</small></p>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-1">
+				{% if 'offline_access' not in session.perms %}
+				<a class="btn btn-outline-danger btn-sm float-right" href="{{ url_for('auth') }}?perms=offline_access" role="button">Keep me logged in 🌟</a>
+				{% endif %}
+			</div>
+		</div>
+		<hr class="mt-0 mb-4">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<a href="{{ url_for('index') }}">Index</a>
+				{% for page in request.path.split('/') %}
+				<li class="breadcrumb-item active text-truncate" aria-current="page">{{ page }}</li>
+				{% endfor %}
+			</ol>
+		</nav>
+		{% if request.args.get('error', None) %}
+		<div class="alert alert-danger" role="alert">
+			<b>Something went wrong.</b><br /> {{ request.args.get('error', None) }}
+		</div>
+		{% endif %}
+		{% block body %}
+		<div class="w-100">
+			<div class="list-group list-group-flush">
+				<a href="{{ url_for('track', track_id='4159180') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100">
+						<h5 class="mb-0">View track information</h5>
+					</div>
+					<small>{{ url_for('track', track_id='4159180') }}</small>
+				</a>
+				<a href="{{ url_for('album', album_id='302127') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">View album information</h5>
+					</div>
+					<small>{{ url_for('album', album_id='302127') }}</small>
+				</a>
+				<a href="{{ url_for('artist', artist_id='27') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">View artist information</h5>
+					</div>
+					<small>{{ url_for('artist', artist_id='27') }}</small>
+				</a>
+				<a href="{{ url_for('user', user_id='34466551') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">View user information</h5>
+					</div>
+					<small>{{ url_for('user', user_id=session.id) }}</small>
+				</a>
+				<a href="{{ url_for('playlist', playlist_id='4262365542') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">View playlist information</h5>
+					</div>
+					<small>{{ url_for('playlist', playlist_id='4262365542') }}</small>
+				</a>
+				<a href="{{ url_for('playlist', playlist_id='1109890291,3155776842') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Compare 2 playlists side by side</h5>
+					</div>
+					<small>{{ url_for('playlist', playlist_id='1109890291,3155776842') }}</small>
+				</a>
+				<a href="{{ url_for('label', label_name='Born Bad Records') }}?title=Born Bad Records" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Display all albums from a label</h5>
+					</div>
+					<small>{{ url_for('label', label_name='Born Bad Records') }}</small>
+				</a>
+				<a href="{{ url_for('update', playlist_id='123') }}?tracks=456,789" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Add tracks to a playlist</h5>
+					</div>
+					<small>{{ url_for('update', playlist_id='123') }}?tracks=456,789</small>
+				</a>
+				<a href="{{ url_for('create', playlist_title='New Playlist') }}?tracks=600629,68721724" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-0">Create a new playlist</h5>
+					</div>
+					<small>{{ url_for('create', playlist_title='New Playlist') }}?tracks=600629,68721724</small>
+				</a>
+			</div>
+		</div>
+		{% endblock %}
+		{% endif %}
+	</div>
+</body>

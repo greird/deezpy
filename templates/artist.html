@@ -1,0 +1,96 @@
+{% extends "index.html" %}
+{% block nav %}
+{{ super() }}
+{% endblock %}
+
+{% block body %}
+<script>
+	(function(d, s, id) { 
+		var js, djs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return; 
+		js = d.createElement(s); js.id = id; 
+		js.src = "https://e-cdns-files.dzcdn.net/js/widget/loader.js"; 
+		djs.parentNode.insertBefore(js, djs);
+	}(document, "script", "deezer-widget-loader"));
+</script>
+
+<h2>🎤 {{ artist.name }}</h2>
+<a href="{{ artist.link }}" class="card-link">See the artist on Deezer 🔎</a>
+<div class="row mt-3">
+
+	<div class="card mx-3 mb-3">
+		<div class="card-header">Artist</div>
+		<div class="card-body">
+			<img class="" src="{{ artist.picture_medium }}" width="250" height="250" alt="">
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item">{{ artist.nb_fan }} fan(s)</li>
+				<li class="list-group-item">{{ artist.nb_album }} album(s)</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="card mr-3 mb-3">
+		<div class="card-header">Artist Radio</div>
+		<div class="card-body">
+			<div class="list-group list-group-flush">
+			{% if artist.radio %}
+					<div class="deezer-widget-player" data-src="https://www.deezer.com/plugins/player?format=square&autoplay=false&playlist=true&width=250&color=007FEB&layout=&size=medium&type=artist&id={{ artist.id }}" data-scrolling="no" data-frameborder="0" data-allowTransparency="true" data-width="250" data-height="250"></div>
+			{% else %}
+				<div class="alert alert-info" role="alert">
+					This artist doesn't have a radio.
+				</div>
+			{% endif %}
+				<a href="{{ url_for('artist_items', artist_id=artist.id, type='albums') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+						<div class="d-flex w-100 justify-content-between">
+							<h5 class="mb-0">Discography</h5>
+						</div>
+						<small>{{ url_for('artist_items', artist_id=artist.id, type='albums') }}</small>
+					</a>
+					<a href="{{ url_for('artist_items', artist_id=artist.id, type='related') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+						<div class="d-flex w-100 justify-content-between">
+							<h5 class="mb-0">Similar artists</h5>
+						</div>
+						<small>{{ url_for('artist_items', artist_id=artist.id, type='related') }}</small>
+					</a>
+				</div>
+		</div>
+	</div>
+
+	<div class="card mb-3 w-50">
+		<div class="card-header">Top tracks</div>
+		<div class="card-body">
+			<table class="table">
+				<thead style="font-size: 0.8em">
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col"></th>
+						<th scope="col">TRACK</th>
+						<th scope="col">ALBUM</th>
+						<th scope="col">RANK</th>
+					</tr>
+				</thead>
+				<tbody style="font-size: 0.9em">
+					{% for track in artist.top_tracks %}
+					<tr>
+						<th class="align-middle" scope="row">{{loop.index}}</th>
+						<td class="align-middle"><img src="{{ track.album.cover_small }}"></td>
+						<td class="align-middle"><a href="{{ url_for('track', track_id=track.id) }}" class="text-dark">{{ track.title }}</a></td>
+						<td class="align-middle"><a href="{{ url_for('album', album_id=track.album.id) }}" class="text-dark">{{ track.album.title }}</a></td>
+						<td class="align-middle">{{ track.rank }}</td>
+					</tr>
+					{% endfor %}
+					<tr>
+						<th class="align-middle" scope="row"></th>
+						<td></td>
+						<td><a href="{{ url_for('artist_items', artist_id=artist.id, type='top') }}">View more...</a></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}

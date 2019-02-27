@@ -1,0 +1,77 @@
+{% extends "index.html" %}
+{% block nav %}
+{{ super() }}
+{% endblock %}
+
+{% block body %}
+<script>
+	(function(d, s, id) { 
+		var js, djs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return; 
+		js = d.createElement(s); js.id = id; 
+		js.src = "https://e-cdns-files.dzcdn.net/js/widget/loader.js"; 
+		djs.parentNode.insertBefore(js, djs);
+	}(document, "script", "deezer-widget-loader"));
+</script>
+
+<h2>💿 {{ album.title }} <small class="text-muted">by <a href="{{ url_for('artist', artist_id=album.artist.id) }}" class="text-secondary">{{ album.artist.name }}</a></small></h2>
+<a href="{{ album.link }}" class="card-link">See the album on Deezer 🔎</a>
+
+<div class="row my-3">
+	<div class="col">
+		<div class="deezer-widget-player" data-src="https://www.deezer.com/plugins/player?format=square&autoplay=false&playlist=false&width=250&height=250&color=007FEB&layout=&size=medium&type=album&id={{ album.id }}" data-scrolling="no" data-frameborder="0" data-allowTransparency="true" data-width="250" data-height="250"></div>
+		<img src="{{ album.artist.picture_small }}" alt="">
+		<a href="{{ url_for('artist', artist_id=album.artist.id) }}" class="text-dark">{{ album.artist.name }}</a>
+	</div>
+
+	<div class="col">
+		<ul class="list-group list-group-flush">
+			<li class="list-group-item">Release date: {{ album.release_date }}</li>
+			<li class="list-group-item">Label: <a href="/label/{{ album.label }}?title={{ album.label }}">{{ album.label }}</a></li>
+			<li class="list-group-item">UPC: {{ album.upc }}</li>
+			<li class="list-group-item">{{ album.fans }} fan(s)</li>
+			<li class="list-group-item">{{ album.nb_tracks }} tracks</li>
+			<li class="list-group-item"> 
+				{% for genre in album.genres.data %}
+				<span class="badge badge-pill badge-primary">{{ genre.name }}</span>
+				{% endfor %}
+			</li>
+		</ul>
+	</div>
+
+	<div class="col-7">
+		<table class="table">
+			<thead style="font-size: 0.8em">
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col"></th>
+					<th scope="col">TRACK</th>
+					<th scope="col">ID</th>
+					<th scope="col">DURATION</th>
+					<th scope="col">RANK</th>
+				</tr>
+			</thead>
+			<tbody style="font-size: 0.9em">
+				{% for track in album.tracks.data %}
+				<tr>
+					<th class="align-middle" scope="row">{{loop.index}}</th>
+					<td class="align-middle"><img src="{{ album.cover_small }}"></td>
+					<td class="align-middle">
+						<a href="{{ url_for('track', track_id=track.id) }}" class="text-dark">{{ track.title }}</a>
+						{% if track.explicit_lyrics %}<span class="badge badge-danger">EXPLICIT LYRICS</span>{% endif %}
+					</td>
+					<td class="align-middle">{{ track.id }}</td>
+					<td class="align-middle">{{ track.duration }}</td>
+					<td class="align-middle">
+						<div class="progress" style="height: 5px;">
+							<div class="progress-bar bg-secondary" role="progressbar" style="width: {{ track.rank / 10000 }}%"  aria-valuenow="{{ track.rank / 10000 }}" aria-valuemin="0" aria-valuemax="100"></div>
+						</div>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "index.html" %}
+{% block nav %}
+{{ super() }}
+{% endblock %}
+
+{% block body %}
+<script>
+	(function(d, s, id) { 
+		var js, djs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return; 
+		js = d.createElement(s); js.id = id; 
+		js.src = "https://e-cdns-files.dzcdn.net/js/widget/loader.js"; 
+		djs.parentNode.insertBefore(js, djs);
+	}(document, "script", "deezer-widget-loader"));
+</script>
+
+<h2>{{ playlist.title }} <small class="text-muted">by <a href="{{ url_for('user', user_id=playlist.creator.id) }}" class="text-muted">{{ playlist.creator.name }}</a></small></h2>
+<a href="{{ playlist.link }}" class="card-link">See the playlist on Deezer 🔎</a>
+
+<div class="row mt-3">
+	<div class="card mx-3 mb-3" style="width: 292px">
+		<div class="card-header">Playlist</div>
+		<div class="card-body">
+			<img class="d-block" src="{{ playlist.picture_medium}}" width="250" height="250" alt="">
+			{% if playlist.description %}
+			<p class="card-text mt-2 mb-0">{{ playlist.description }}</p>
+			{% endif %}
+			{% if playlist.is_loved_track %}
+			<span class="badge badge-pill badge-primary mt-3">Loved tracks</span>				
+			{% endif %}
+			{% if playlist.collaborative %}
+			<span class="badge badge-pill badge-primary mt-3">Collaborative</span>				
+			{% endif %}
+			{% if not playlist.public %}
+			<span class="badge badge-pill badge-primary mt-3">Private</span>				
+			{% endif %}
+			<ul class="list-group list-group-flush mt-3">
+				<li class="list-group-item">{{ playlist.fans }} fans</li>
+				<li class="list-group-item">Created on {{ playlist.creation_date }}</li>
+				<li class="list-group-item">Duration: {{ playlist.duration }}</li>
+				<li class="list-group-item">{{ playlist.nb_tracks }} tracks</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="card mr-3 mb-3" style="width: 702px">
+		<div class="card-header">Player</div>
+		<div class="card-body">
+			<div class="deezer-widget-player" data-src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=660&height=500&color=007FEB&layout=&size=medium&type=playlist&id={{ playlist.id }}" data-scrolling="no" data-frameborder="0" data-allowTransparency="true" data-width="660" data-height="500"></div>
+		</div>
+		<a href="/track/{% for track in playlist.tracks.data %}{{ track.id }},{% endfor %}?title={{ playlist.title }}" class="btn btn-sm btn-primary mx-3 mb-3">See tracks details</a>
+	</div>
+</div>
+{% endblock %}
