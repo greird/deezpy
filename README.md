@@ -15,6 +15,8 @@ Features included are
 
 Note: Most routes can take a comma-separated list of item ids (e.g. `/playlist/4262365542,1600104235`).
 
+![Dashboard view](http://greird.webfactional.com/img/deezpy1.png "")
+
 ## Configuration
 
 ### 1. Deezer API configuration
@@ -22,20 +24,19 @@ Note: Most routes can take a comma-separated list of item ids (e.g. `/playlist/4
 Create a `config.cfg`, with the following lines, in the same repository as `deez.py`.
 ```
 [deezer-api]
-
 # Your deezer app settings
 APP_ID=
 APP_SECRET=
 
 [flask-server]
 # Flask server config
-
 IP=127.0.0.1
 PORT=5000
 DEBUG=FALSE
 
 [cache]
-DURATION=60*60*2
+# Duration of the cache in seconds
+DURATION=43200
 ```
 
 To retrieve your APP_ID and APP_SECRET key you can create a new Deezer app here: https://developers.deezer.com/myapps/create
